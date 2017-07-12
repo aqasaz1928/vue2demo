@@ -33,7 +33,9 @@
     </div>
     <div class="detail" v-show="detailShow">
         <div class="detail-wrapper clearfix">
-            <div class="detail-main"></div>
+            <div class="detail-main">
+                <h1 class="name">{{seller.name}}</h1>
+            </div>
         </div>
         <div class="detail-close">
             <i class="icon-close"></i>
@@ -193,6 +195,11 @@ export default {
                 .detail-main
                     margin-top 64px
                     padding-bottom 64px
+                    .name
+                        font-size 16px
+                        line-height 16px
+                        text-align center
+                        font-weight 700
             .detail-close
                 position relative
                 width 32px

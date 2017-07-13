@@ -1,69 +1,91 @@
 <template>
-<div class="header">
-    <div class="content-wrapper">
-        <div class="avatar">
-            <img :src="seller.avatar" width="64px" height="64px">
-        </div>
-        <div class="content">
-            <div class="title">
-                <span class="brand"></span>
-                <span class="name">{{ seller.name }}</span>
+    <div class="header">
+        <div class="content-wrapper">
+            <div class="avatar">
+                <img :src="seller.avatar" width="64px" height="64px">
             </div>
-            <div class="description">
-                <span class="description">{{seller.description}}/</span>
-                <span class="deliverytime">{{seller.deliveryTime}}分钟送达</span>
-            </div>
-            <div class="supports" v-for="(support,type,index) in seller.supports" :key="index">
-                <div class="support-show" v-if="type === 0">
-                    <span class="icon" :class="classMap[type]"></span>
-                    <span class="text">{{support.description}}</span>
+            <div class="content">
+                <div class="title">
+                    <span class="brand"></span>
+                    <span class="name">{{ seller.name }}</span>
+                </div>
+                <div class="description">
+                    <span class="description">{{seller.description}}/</span>
+                    <span class="deliverytime">{{seller.deliveryTime}}分钟送达</span>
+                </div>
+                <div class="supports" v-for="(support,type,index) in seller.supports" :key="index">
+                    <div class="support-show" v-if="type === 0">
+                        <span class="icon" :class="classMap[type]"></span>
+                        <span class="text">{{support.description}}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="supports-count" v-if="seller.supports" @click="showDetail">
-            <span class="count">{{seller.supports.length}}个</span>
-            <i class="icon-keyboard_arrow_right"></i>
-        </div>
-    </div>
-    <div class="bulletin-wrapper" @click="showDetail">
-        <span class="bulletin-title"></span><span class="bulletin-text">{{seller.bulletin}}</span><i class="icon-keyboard_arrow_right"></i>
-    </div>
-    <div class="background">
-        <img :src="seller.avatar" width="100%" >
-    </div>
-    <div class="detail" v-show="detailShow">
-        <div class="detail-wrapper clearfix">
-            <div class="detail-main">
-                <h1 class="name">{{seller.name}}</h1>
+            <div class="supports-count" v-if="seller.supports" @click="showDetail">
+                <span class="count">{{seller.supports.length}}个</span>
+                <i class="icon-keyboard_arrow_right"></i>
             </div>
         </div>
-        <div class="detail-close">
-            <i class="icon-close"></i>
+        <div class="bulletin-wrapper" @click="showDetail">
+            <span class="bulletin-title"></span>
+            <span class="bulletin-text">{{seller.bulletin}}</span>
+            <i class="icon-keyboard_arrow_right"></i>
+        </div>
+        <div class="background">
+            <img :src="seller.avatar" width="100%">
+        </div>
+        <div class="detail" v-show="detailShow">
+            <div class="detail-wrapper clearfix">
+                <div class="detail-main">
+                    <h1 class="name">{{seller.name}}</h1>
+                    <div class="star-wrapper">
+                        <star :size="48" :score="seller.score"></star>
+                    </div>
+                    <div class="detail-title-wrapper">
+                        <detailTitle text="优惠信息"></detailTitle>
+                    </div>
+                    <ul v-if="seller.supports" class="supports">
+                        <li v-for="(support,type,index) in seller.supports" :key="index" class="support-item">
+                            <span class="icon" :class="classMap[type]"></span>
+                            <span class="text">{{support.description}}</span>
+                        </li>
+                    </ul>
+                    <div class="detail-title-wrapper">
+                        <detailTitle text="商家公告"></detailTitle>
+                    </div>
+                </div>
+            </div>
+            <div class="detail-close">
+                <i class="icon-close"></i>
+            </div>
         </div>
     </div>
-</div>
-  
 </template>
-<script type="text/ecmascript-6">
+ <script type="text/ecmascript-6">
+import star from '@/components/star/star'
+import detailTitle from '@/components/detail-title/detail-title'
 export default {
-  props: {
-      seller: {
-          type: Object
-      }
-  },
-  data () {
-    return {
-        detailShow: false
+    props: {
+        seller: {
+            type: Object
+        }
+    },
+    data () {
+        return {
+            detailShow: false
+        }
+    },
+    methods: {
+        showDetail () {
+            this.detailShow = true;
+        }
+    },
+    created () {
+        this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+    },
+    components: {
+        star,
+        detailTitle
     }
-  },
-  methods: {
-    showDetail () {
-        this.detailShow = true;
-    }
-  },
-  created () {
-      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
-  }
 }
 </script>
 <style rel="stylesheet/stylus" lang="stylus">
@@ -200,6 +222,47 @@ export default {
                         line-height 16px
                         text-align center
                         font-weight 700
+                    .star-wrapper
+                        margin-top 16px
+                        line-height 24px
+                        padding 4px 0
+                        text-align center
+                    .detail-title-wrapper
+                        margin 24px 36px
+                    .supports
+                        margin 0 36px
+                        padding-left 12px
+                        .support-item
+                            position relative
+                            font-size 0
+                            margin-bottom 12px
+                            &:last-child
+                                margin-bottom 0
+                            .icon
+                                display inline-block
+                                background-size 100%
+                                background-repeat no-repeat
+                                width 16px
+                                height 16px
+                                margin-right 6px
+                                vertical-align top
+                                &.decrease
+                                    bg-image('./img/decrease_2')
+                                &.discount
+                                    bg-image('./img/discount_2')
+                                &.special
+                                    bg-image('./img/special_2')
+                                &.guarantee
+                                    bg-image('./img/guarantee_2')
+                                &.invoice
+                                    bg-image('./img/invoice_2')
+                            .text
+                                display inline-block
+                                font-size 12px
+                                font-weight 200
+                                line-height 16px
+                            
+
             .detail-close
                 position relative
                 width 32px

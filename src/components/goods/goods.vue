@@ -1,8 +1,10 @@
 <template>
-<div>
-    i'm a goods
+<div class="goods">
+<div class="menu-wrapper">
 </div>
-  
+<div class="foods-wrapper"></div>
+</div>
+
 </template>
 <script type="text/ecmascript-6">
 export default {

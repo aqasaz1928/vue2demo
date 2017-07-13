@@ -33,7 +33,8 @@
         <div class="background">
             <img :src="seller.avatar" width="100%">
         </div>
-        <div class="detail" v-show="detailShow">
+        <transition name="fade">
+            <div class="detail" v-show="detailShow">
             <div class="detail-wrapper clearfix">
                 <div class="detail-main">
                     <h1 class="name">{{seller.name}}</h1>
@@ -52,12 +53,17 @@
                     <div class="detail-title-wrapper">
                         <detailTitle text="商家公告"></detailTitle>
                     </div>
+                    <div class="bulletin">
+                        <p>{{seller.bulletin}}</p>
+                    </div>
                 </div>
             </div>
             <div class="detail-close">
-                <i class="icon-close"></i>
+                <i class="icon-close" @click="hideDetail"></i>
             </div>
-        </div>
+            </div>
+        </transition>
+
     </div>
 </template>
  <script type="text/ecmascript-6">
@@ -77,6 +83,9 @@ export default {
     methods: {
         showDetail () {
             this.detailShow = true;
+        },
+        hideDetail () {
+            this.detailShow = false;
         }
     },
     created () {
@@ -90,6 +99,10 @@ export default {
 </script>
 <style rel="stylesheet/stylus" lang="stylus">
 @import '../../common/stylus/mixin.styl'
+    .fade-enter, .fade-leave-to
+        opacity 0
+    .fade-enter-active,.fade-leave-active
+        transition opacity .5s ease
     .header
         position relative 
         color #fff
@@ -261,7 +274,13 @@ export default {
                                 font-size 12px
                                 font-weight 200
                                 line-height 16px
-                            
+                    .bulletin
+                        margin 0 36px
+                        padding 0 12px
+                        p
+                            font-size 12px
+                            line-height 24px
+                            font-weight 200        
 
             .detail-close
                 position relative

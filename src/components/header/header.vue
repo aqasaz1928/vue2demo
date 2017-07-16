@@ -15,7 +15,7 @@
                 </div>
                 <div class="supports" v-for="(support,type,index) in seller.supports" :key="index">
                     <div class="support-show" v-if="type === 0">
-                        <span class="icon" :class="classMap[type]"></span>
+                        <icon :size="1" :type="classMap[type]"></icon>
                         <span class="text">{{support.description}}</span>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                     </div>
                     <ul v-if="seller.supports" class="supports">
                         <li v-for="(support,type,index) in seller.supports" :key="index" class="support-item">
-                            <span class="icon" :class="classMap[type]"></span>
+                            <icon :size="2" :type="classMap[type]"></icon>
                             <span class="text">{{support.description}}</span>
                         </li>
                     </ul>
@@ -69,6 +69,9 @@
  <script type="text/ecmascript-6">
 import star from '@/components/star/star'
 import detailTitle from '@/components/detail-title/detail-title'
+import icon from '@/components/icon/icon'
+import Const from '@/common/js/const'
+
 export default {
     props: {
         seller: {
@@ -89,11 +92,12 @@ export default {
         }
     },
     created () {
-        this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+        this.classMap = Const.ICON_MAP
     },
     components: {
         star,
-        detailTitle
+        detailTitle,
+        icon
     }
 }
 </script>
@@ -111,6 +115,7 @@ export default {
             position relative
             padding 24px 12px 18px 24px
             font-size 0
+            white-space nowrap
             .avatar, .content
                 display inline-block
                 vertical-align middle
@@ -141,27 +146,10 @@ export default {
                     margin-bottom 10px
                 .supports
                     font-size 0
-                    .icon  
-                        display inline-block
-                        width 12px
-                        height 12px
-                        margin-right 4px
-                        background-size 12px
-                        background-repeat no-repeat
-                        vertical-align top
-                        &.decrease
-                            bg-image('./img/decrease_1')
-                        &.discount
-                            bg-image('./img/discount_1')
-                        &.special
-                            bg-image('./img/special_1')
-                        &.guarantee
-                            bg-image('./img/guarantee_1')
-                        &.invoice
-                            bg-image('./img/invoice_1')
                     .text
                         font-size 10px
                         line-height 12px
+                        margin-left 4px
             
             .supports-count
                 position absolute
@@ -252,29 +240,12 @@ export default {
                             margin-bottom 12px
                             &:last-child
                                 margin-bottom 0
-                            .icon
-                                display inline-block
-                                background-size 100%
-                                background-repeat no-repeat
-                                width 16px
-                                height 16px
-                                margin-right 6px
-                                vertical-align top
-                                &.decrease
-                                    bg-image('./img/decrease_2')
-                                &.discount
-                                    bg-image('./img/discount_2')
-                                &.special
-                                    bg-image('./img/special_2')
-                                &.guarantee
-                                    bg-image('./img/guarantee_2')
-                                &.invoice
-                                    bg-image('./img/invoice_2')
                             .text
                                 display inline-block
                                 font-size 12px
                                 font-weight 200
                                 line-height 16px
+                                margin-left 6px
                     .bulletin
                         margin 0 36px
                         padding 0 12px

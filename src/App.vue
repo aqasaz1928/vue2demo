@@ -22,6 +22,7 @@
 
 <script>
 import header from 'components/header/header';
+import Const from '@/common/js/const'
 const ERR_OK = 0;
 export default {
   data () {
@@ -33,7 +34,7 @@ export default {
     this.$http.get('/api/seller').then(
       response => {
         response = response.body;
-        if (response.errno === ERR_OK) {
+        if (response.errno === Const.ERR_OK) {
           this.seller = response.data;
         }
         console.log(this.seller);

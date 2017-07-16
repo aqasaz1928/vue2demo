@@ -8,13 +8,24 @@
         </li>
     </ul>
 </div>
-<div class="foods-wrapper"></div>
+<div class="foods-wrapper">
+    <ul>
+        <li class="food-list" v-for="(item, index) in goods" :key="index">
+            <ul>
+                <li v-for="(food, i) in item.foods" :key="i" class="food-item">
+                    <food :foodData="food"></food>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>
 </div>
 
 </template>
  <script type="text/ecmascript-6">
  import Const from '@/common/js/const'
  import icon from '@/components/icon/icon'
+ import food from '@/components/food-item/food'
  
 export default {
   props: {
@@ -42,7 +53,8 @@ export default {
       )
   },
   components: {
-      icon
+      icon,
+      food
   }
 }
 </script>

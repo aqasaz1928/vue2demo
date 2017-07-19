@@ -2,7 +2,8 @@
 <div class="goods">
 <div class="menu-wrapper" ref="menuWrapper">
     <ul v-if="goods">
-        <li v-for="(item, index) in goods" :key="index" class="menu-item">
+        <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{current: index === currentIndex}"
+            @touchend="selectMenu(index, $event)" @click="selectMenu(index, $event)">
             <span class="text border-1px"><icon :size="3" :type="iconMap[item.type]" v-if="item.type>0"></icon>
             {{item.name}}</span>
         </li>
@@ -10,7 +11,7 @@
 </div>
 <div class="foods-wrapper" ref="foodWrapper">
     <ul>
-        <li class="food-list" v-for="(item, index) in goods" :key="index">
+        <li class="food-list food-list-hook" v-for="(item, index) in goods" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
                 <li v-for="(food, i) in item.foods" :key="i" class="food-item border-1px">
@@ -20,14 +21,16 @@
         </li>
     </ul>
 </div>
+<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" test-prop="测试属性"></shopcart>
 </div>
 
 </template>
  <script type="text/ecmascript-6">
  import Const from '@/common/js/const'
  import icon from '@/components/icon/icon'
- import food from '@/components/food-item/food'
+ import food from '@/components/food/food'
  import BScroll from 'better-scroll'
+ import shopcart from '@/components/shopcart/shopcart'
 
 export default {
   props: {
@@ -38,7 +41,9 @@ export default {
   data () {
       return {
           goods: [],
-          iconMap: Const.ICON_MAP
+          iconMap: Const.ICON_MAP,
+          foodListHeight: [0],
+          scrollY: 0
       }
   },
   created () {
@@ -49,6 +54,7 @@ export default {
                 this.goods = repData.data
                 this.$nextTick(() => {
                     this._initScroll()
+                    this._calculateHeight()
                 })
             }
           },
@@ -59,12 +65,44 @@ export default {
   },
   components: {
       icon,
-      food
+      food,
+      shopcart
+  },
+  computed: {
+    currentIndex () {
+        for (let i = 0; i < this.foodListHeight.length; i++) {
+            if (!this.foodListHeight[i + 1] ||
+             this.scrollY + 10 >= this.foodListHeight[i] && 
+             this.scrollY + 10 < this.foodListHeight[i + 1]) {
+                return i
+            }
+        }
+        return 0
+    }
   },
   methods: {
       _initScroll () {
           this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
-          this.foodScroll = new BScroll(this.$refs.foodWrapper, {})
+          this.foodScroll = new BScroll(this.$refs.foodWrapper, {
+              probeType: 3
+          })
+          this.foodScroll.on('scroll', (pos) => {
+              this.scrollY = Math.abs(Math.round(pos.y))
+          })
+      },
+      _calculateHeight () {
+          let height = 0
+        let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
+        for (let i = 0; i < foodList.length; i++) {
+            height += foodList[i].clientHeight
+            this.foodListHeight.push(height)
+        }
+      },
+      selectMenu (index, event) {
+          console.log(event)
+          let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
+          let el = foodList[index]
+          this.foodScroll.scrollToElement(el, 500)
       }
   }
 }
@@ -85,16 +123,21 @@ export default {
         background-color #f3f5f7
         .menu-item
             display table
-            font-size 0
+            position relative
             height 54px
             width 56px
-            margin auto
             line-height 14px
+            padding 0 12px
+            &.current 
+                position relative
+                background-color #fff
+                margin-top -1px
+                .text
+                    font-weight 700
+                    border-none()
             .text
-                display inline-block
                 display table-cell
                 text-align center
-                width 56px
                 vertical-align middle
                 font-size 12px
                 color rgb(7,17,27)

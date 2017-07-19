@@ -49,12 +49,14 @@ export default {
             line-height 10px
         .desc
             margin-bottom 8px
+            line-height 12px
         .extra
             .count
                 margin-right 12px
         .price
             font-weight 700
             line-height 24px
+            font-size 0
             .now
                 font-size 14px
                 color rgb(240,20,20)

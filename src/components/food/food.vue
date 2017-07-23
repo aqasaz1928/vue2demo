@@ -12,16 +12,24 @@
         <div class="price">
             <span class="now">￥{{foodData.price}}</span><span class="old" v-if="foodData.oldPrice">￥{{foodData.oldPrice}}</span>
         </div>
+        <div class="cartcontrol-wrapper">
+            <cartcontrol :food="foodData"></cartcontrol>
+        </div>
     </div>
 </div>
   
 </template>
 <script type="text/ecmascript-6">
+ import cartcontrol from '@/components/cartcontrol/cartcontrol'
+
 export default {
   props: {
       foodData: {
           type: Object
       }
+  },
+  components: {
+      cartcontrol
   }
 }
 </script>
@@ -65,6 +73,11 @@ export default {
                 font-size 10px
                 color rgb(147, 153, 159)
                 text-decoration line-through
+        .cartcontrol-wrapper
+            position absolute
+            right 0
+            bottom -6px
+
 
 </style>
 

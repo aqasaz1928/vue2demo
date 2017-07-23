@@ -21,7 +21,7 @@
         </li>
     </ul>
 </div>
-<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" test-prop="测试属性"></shopcart>
+<shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selected-foods="selectedFoods"></shopcart>
 </div>
 
 </template>
@@ -78,13 +78,25 @@ export default {
             }
         }
         return 0
+    },
+    selectedFoods () {
+        let foods = []
+        this.goods.forEach(foodList => {
+            foodList.foods.forEach(food => {
+                if (food.count) {
+                    foods.push(food)
+                }
+            })
+        })
+        return foods
     }
   },
   methods: {
       _initScroll () {
           this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
           this.foodScroll = new BScroll(this.$refs.foodWrapper, {
-              probeType: 3
+              probeType: 3,
+              click: true
           })
           this.foodScroll.on('scroll', (pos) => {
               this.scrollY = Math.abs(Math.round(pos.y))
@@ -103,7 +115,10 @@ export default {
           let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
           let el = foodList[index]
           this.foodScroll.scrollToElement(el, 500)
-      }
+      },
+      addHandler (event) {
+        alert(event.target)
+    }
   }
 }
 </script>

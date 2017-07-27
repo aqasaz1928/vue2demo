@@ -7,7 +7,7 @@
          </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
-    <div class="cart-increase icon-add_circle"  @click="addToCart"></div>
+    <div class="cart-increase icon-add_circle"  @click="addToCart" @touchend="addToCart"></div>
 </div>
   
 </template>
@@ -33,6 +33,9 @@ export default {
   },
   methods: {
       addToCart (event) {
+          if (event._constructed) {
+            return
+          }
           let count = this.food.count || 0
           this.food.count = count + 1
           bus.$emit('cart.add', event.target)

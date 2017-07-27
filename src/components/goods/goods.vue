@@ -95,8 +95,7 @@ export default {
       _initScroll () {
           this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
           this.foodScroll = new BScroll(this.$refs.foodWrapper, {
-              probeType: 3,
-              click: true
+              probeType: 3
           })
           this.foodScroll.on('scroll', (pos) => {
               this.scrollY = Math.abs(Math.round(pos.y))
@@ -111,7 +110,6 @@ export default {
         }
       },
       selectMenu (index, event) {
-          console.log(event)
           let foodList = this.$refs.foodWrapper.getElementsByClassName('food-list-hook')
           let el = foodList[index]
           this.foodScroll.scrollToElement(el, 500)

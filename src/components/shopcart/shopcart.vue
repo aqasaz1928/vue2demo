@@ -1,4 +1,5 @@
 <template>
+<div>
 <div class="shopcart">
     <div class="content">
         <div class="content-left" @click="toggleList">
@@ -12,7 +13,7 @@
             <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
             <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
         </div>
-        <div class="content-right">
+        <div class="content-right" @click="pay">
             <div class="pay" :class="{enough: totalPrice >= minPrice}">
                 {{payDesc}}
             </div>
@@ -50,6 +51,13 @@
         </div>
         </transition>
 </div>
+<transition name="fade">
+    <div class="list-mask" v-show="listShow" @click="hideList">
+
+</div>
+</transition>
+</div>
+
   
 </template>
  <script type="text/ecmascript-6">
@@ -77,9 +85,19 @@ export default {
         bus.$on('cart.add', this._drop)
     },
     methods: {
+        pay () {
+            if (this.totalPrice < this.minPrice) {
+                return;
+            }
+            alert(this.totalPrice)
+        },
+        hideList () {
+            this.fold = true
+        },
         listEmpty () {
             this.selectedFoods.forEach((food) => {
                 food.count = 0
+                this.fold = true
             })
         },
         _drop (target) {
@@ -318,7 +336,7 @@ export default {
                     font-weight 200
                     color rgb(7,17,27)
                 .empty
-                    flex 1
+                    flex 0 0 30px
                     text-align right
                     font-size 12px
                     font-weight 200
@@ -359,5 +377,16 @@ export default {
             transform translateY(0)
             
             
+
+    .list-mask
+        position fixed
+        top 0
+        left 0
+        width 100%
+        height 100%
+        background-color rgba(7,17,27,.6)
+        filter blur(3px)
+        z-index 5
+
 </style>
 

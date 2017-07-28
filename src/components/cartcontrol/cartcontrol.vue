@@ -7,7 +7,7 @@
          </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
-    <div class="cart-increase icon-add_circle"  @click="addToCart" @touchend="addToCart"></div>
+    <div class="cart-increase icon-add_circle"  @click.stop="addToCart" @touchend.stop="addToCart"></div>
 </div>
   
 </template>

@@ -3,7 +3,7 @@
 <div class="menu-wrapper" ref="menuWrapper">
     <ul v-if="goods">
         <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{current: index === currentIndex}"
-            @touchend="selectMenu(index, $event)" @click="selectMenu(index, $event)">
+              @click="selectMenu(index, $event)">
             <span class="text border-1px"><icon :size="3" :type="iconMap[item.type]" v-if="item.type>0"></icon>
             {{item.name}}</span>
         </li>
@@ -14,13 +14,15 @@
         <li class="food-list food-list-hook" v-for="(item, index) in goods" :key="index">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-                <li v-for="(food, i) in item.foods" :key="i" class="food-item border-1px">
+                <li v-for="(food, i) in item.foods" :key="i" class="food-item border-1px"
+                    @click="selectFood(food, $event)">
                     <food :foodData="food"></food>
                 </li>
             </ul>
         </li>
     </ul>
 </div>
+<foodDetail :food="selectedFood" ref="foodDetail"></foodDetail>
 <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" :selected-foods="selectedFoods"></shopcart>
 </div>
 
@@ -31,6 +33,7 @@
  import food from '@/components/food/food'
  import BScroll from 'better-scroll'
  import shopcart from '@/components/shopcart/shopcart'
+ import foodDetail from '@/components/food_detail/foodDetail'
 
 export default {
   props: {
@@ -43,7 +46,8 @@ export default {
           goods: [],
           iconMap: Const.ICON_MAP,
           foodListHeight: [0],
-          scrollY: 0
+          scrollY: 0,
+          selectedFood: {}
       }
   },
   created () {
@@ -66,7 +70,8 @@ export default {
   components: {
       icon,
       food,
-      shopcart
+      shopcart,
+      foodDetail
   },
   computed: {
     currentIndex () {
@@ -95,7 +100,8 @@ export default {
       _initScroll () {
           this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
           this.foodScroll = new BScroll(this.$refs.foodWrapper, {
-              probeType: 3
+              probeType: 3,
+              click: true
           })
           this.foodScroll.on('scroll', (pos) => {
               this.scrollY = Math.abs(Math.round(pos.y))
@@ -116,7 +122,14 @@ export default {
       },
       addHandler (event) {
         alert(event.target)
-    }
+      },
+      selectFood (food, event) {
+        if (event.isTrusted) {
+            return
+        }
+        this.selectedFood = food
+        this.$refs.foodDetail.show()
+      }
   }
 }
 </script>

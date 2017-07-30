@@ -2,12 +2,12 @@
 <div class="cartcontrol">
     <transition name="move">
     <div class="cart-decrease" v-show="food.count > 0"
-          @click="decreaseFromCart">
+          @click.stop.prevent="decreaseFromCart" @touchend.stop.prevent="decreaseFromCart">
             <span class="inner  icon-remove_circle_outline"></span>
          </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
-    <div class="cart-increase icon-add_circle"  @click.stop="addToCart" @touchend.stop="addToCart"></div>
+    <div class="cart-increase icon-add_circle"  @click.stop.prevent="addToCart" @touchend.stop.prevent="addToCart" ref="cartIncrease"></div>
 </div>
   
 </template>
@@ -40,10 +40,18 @@ export default {
           this.food.count = count + 1
           bus.$emit('cart.add', event.target)
       },
-      decreaseFromCart () {
+      decreaseFromCart (event) {
+          if (event._constructed) {
+              return
+          }
           if (this.food.count) {
             this.food.count--
           }
+      },
+      // 该方法只能通过其他元素调用
+      addFirst () {
+          this.food.count = 1
+          bus.$emit('cart.add', this.$refs.cartIncrease)
       }
   }
 }

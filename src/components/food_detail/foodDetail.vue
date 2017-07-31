@@ -29,7 +29,7 @@
     <split v-if="food.info"></split>
     <div class="rating">
       <h1 class="title">商品评价</h1>
-      <ratingSelect :ratings-data="ratingsData"></ratingSelect>
+      <ratingSelect :ratings="food.ratings" :selected-type="selectedType" :desc="desc" :only-content="onlyContent"></ratingSelect>
     </div>
     </div>
     <div class="back" @click.stop.prevent="hide($event)">
@@ -66,15 +66,8 @@ export default {
     split,
     ratingSelect
   },
-  computed: {
-    ratingsData () {
-      return {
-        selectedType: this.selectedType,
-        onlyContent: this.onlyContent,
-        desc: this.desc,
-        ratings: this.food
-      }
-    }
+  created () {
+    bus.$on('ratingType.select', this._changeRatingType)
   },
   methods: {
     _initialScroll () {
@@ -94,7 +87,7 @@ export default {
     show () {
       this.showFlag = true
       this.selectedType = ratingType.ALL
-      this.onlyContent = true
+      this.onlyContent = false
       this.desc = {
         all: '全部',
         positive: '推荐',
@@ -106,6 +99,8 @@ export default {
     },
     addFirst (event) {
       this.$refs.cartControl.addFirst()
+    },
+    _changeRatingType (type) {
     }
   }
   

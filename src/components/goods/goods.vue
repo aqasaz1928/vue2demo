@@ -3,7 +3,7 @@
 <div class="menu-wrapper" ref="menuWrapper">
     <ul v-if="goods">
         <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{current: index === currentIndex}"
-              @click="selectMenu(index, $event)">
+              @click="selectMenu(index, $event)" @touchend="selectMenu(index, $event)">
             <span class="text border-1px"><icon :size="3" :type="iconMap[item.type]" v-if="item.type>0"></icon>
             {{item.name}}</span>
         </li>
@@ -128,7 +128,9 @@ export default {
             return
         }
         this.selectedFood = food
-        this.$refs.foodDetail.show()
+        this.$nextTick(() => {
+            this.$refs.foodDetail.show()
+        })
       }
   }
 }

@@ -5,13 +5,13 @@
         @click="select('ALL', $event)">{{desc.all}}
             <span class="count">{{ratings.length}}</span>
         </span>
-        <span class="block positive" :class="{ active: selectedType === 1}"
+        <span class="block positive" :class="{ active: selectedType === 0}"
         @click="select('POSITIVE', $event)">{{desc.positive}}
-            <span class="count">{{positiveCount}}</span>
+            <span class="count">{{positives.length}}</span>
         </span>
-        <span class="block negative" :class="{active: selectedType === 0}"
+        <span class="block negative" :class="{active: selectedType === 1}"
         @click="select('NEGATIVE', $event)">{{desc.negative}}
-            <span class="count">{{negativeCount}}</span>
+            <span class="count">{{negatives.length}}</span>
         </span>
     </div>
     <div class="switch" :class="{on: onlyContent}" @click="toggleContent">
@@ -54,42 +54,26 @@ export default {
            if (!event._constructed) {
                 return
            }
-            console.log(ratingType[type])
-            this.selectedType = ratingType[type]
-            bus.$emit('ratingType.select', this.selectedType)
+        bus.$emit('ratingType.select', type)
        },
        toggleContent (event) {
            if (!event._constructed) {
                return
            }
-           this.onlyContent = !this.onlyContent
-           bus.$emit('content.toggle', this.onlyContent)
+        bus.$emit('content.toggle')
        }
    },
+   
    computed: {
-       positiveCount () {
-           let count = 0
-           if (!this.ratings) {
-                return ''
-           }
-            this.ratings.forEach((rating) => {
-                if (rating.rateType === 1) {
-                    count += 1
-                }
-            })
-            return count
+       positives () {
+        return this.ratings.filter((rating) => {
+            return rating.rateType === ratingType.POSITIVE
+        })
        },
-       negativeCount () {
-           let count = 0
-           if (!this.ratings) {
-                return ''
-           }
-            this.ratings.forEach((rating) => {
-                if (rating.rateType === 0) {
-                    count += 1
-                }
-            })
-            return count
+       negatives () {
+        return this.ratings.filter((rating) => {
+            return rating.rateType === ratingType.NEGATIVE
+        })
        }
    }
 }

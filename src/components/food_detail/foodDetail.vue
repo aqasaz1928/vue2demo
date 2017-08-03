@@ -29,7 +29,26 @@
     <split v-if="food.info"></split>
     <div class="rating">
       <h1 class="title">商品评价</h1>
-      <ratingSelect :ratings="food.ratings" :selected-type="selectedType" :desc="desc" :only-content="onlyContent"></ratingSelect>
+      <ratingSelect :ratings="ratings" :selected-type="selectedType" :desc="desc" :only-content="onlyContent"></ratingSelect>
+      <div class="rating-wrapper">
+        <ul v-show="food.ratings && food.ratings.length">
+          <li v-for="(rating, index) in food.ratings" class="rating-item border-1px" :key="index"
+          v-show="needShow(rating.rateType, rating.text)">
+            <div class="user">
+              <span class="name">{{rating.username}}</span>
+              <img class="avatar" width="12px" height="12px" :src="rating.avatar">
+            </div>
+            <div class="time">{{rating.rateTime | formatDate}}</div>
+            <p class="text">
+              <span :class="[rating.rateType === 0 ? 'icon-thumb_up':'icon-thumb_down']"></span>
+              {{rating.text}}
+            </p>
+          </li>
+        </ul>
+        <div class="no-rating" v-show="!food.ratings || !food.ratings.length">
+          暂无评价
+        </div>
+      </div>
     </div>
     </div>
     <div class="back" @click.stop.prevent="hide($event)">
@@ -45,8 +64,8 @@ import bus from '@/common/js/Bus'
 import split from '@/components/split/split'
 import ratingSelect from '@/components/rating_select/ratingSelect'
 import Const from '@/common/js/const'
+import DateUtil from '@/common/js/dateUtil'
 let ratingType = Const.ratingType
-
 export default {
   props: {
     food: {
@@ -58,7 +77,8 @@ export default {
       showFlag: false,
       selectedType: ratingType.ALL,
       onlyContent: true,
-      desc: {}
+      desc: {},
+      ratings: []
     }
   },
   components: {
@@ -68,6 +88,13 @@ export default {
   },
   created () {
     bus.$on('ratingType.select', this._changeRatingType)
+    bus.$on('content.toggle', this._toggleContent)
+  },
+  filters: {
+    formatDate (dateStr) {
+      let date = new Date(dateStr)
+      return DateUtil.Format(date, 'yyyy-MM-dd hh:mm')
+    }
   },
   methods: {
     _initialScroll () {
@@ -81,7 +108,6 @@ export default {
       }
     },
     hide (event) {
-      console.log(event)
       this.showFlag = false
     },
     show () {
@@ -93,6 +119,7 @@ export default {
         positive: '推荐',
         negative: '吐槽'
       }
+      this.ratings = this.food.ratings
       this.$nextTick(() => {
       this._initialScroll()
     })
@@ -101,12 +128,33 @@ export default {
       this.$refs.cartControl.addFirst()
     },
     _changeRatingType (type) {
+      this.selectedType = ratingType[type]
+      this.$nextTick(() => {
+        this.detailScroll.refresh()
+      })
+    },
+    _toggleContent () {
+      this.onlyContent = !this.onlyContent
+      this.$nextTick(() => {
+        this.detailScroll.refresh()
+      })
+    },
+    needShow (type, text) {
+      if (this.onlyContent && !text) {
+        return false
+      }
+      if (this.selectedType === ratingType.ALL) {
+        return true
+      } else {
+        return type === this.selectedType
+      }
     }
   }
   
 }
 </script>
 <style rel="stylesheet/stylus" lang="stylus">
+@import '../../common/stylus/mixin.styl'
 .food-detail
   position fixed
   left 0
@@ -122,11 +170,13 @@ export default {
     position fixed
     left 10
     top 0
+    width 100%
+    background-color rgba(7,17,27,0.1)
     .icon-arrow_lift
       display block
       padding 12px
       font-weight 700
-      color rgba(200,200,200,.6)
+      color rgba(150,150,150,.8)
       &:hover
         color rgba(230,230,230,1)
   .image-header
@@ -226,6 +276,49 @@ export default {
       font-weight 700
       color rgb(7,17,27)
       line-height 14px
+    .rating-wrapper
+      padding 0 18px
+      .rating-item
+        position relative
+        padding 16px 0
+        border-1px(rgba(7,17,27,0.1))
+        .user
+          position absolute
+          right 0
+          top 16px
+          font-size 0
+          line-height 12px
+          .name
+            display inline-block
+            margin-right 6px
+            font-size 10px
+            color rgb(147,153,159)
+            vertical-align top
+          .avatar
+            border-radius 50%
+        .time
+          font-size 10px
+          color rgb(147,153,159)
+          line-height 12px
+          margin-bottom 6px
+        .text
+          line-height 16px
+          font-size 12px
+          color rgb(7,17,27)
+          span
+            line-height 16px
+            margin-right 4px
+            font-size 12px
+            &.icon-thumb_up
+              color rgb(0, 160, 220)
+            &.icon-thumb_down
+              color rgb(147,153,159)
+      .no-rating
+        padding 16px 0
+        font-size 12px
+        color rgb(147, 153, 159)
+
+
 
 .move-enter, .move-leave-to
   opacity 0

@@ -42,6 +42,18 @@
                     </li>
                 </ul>
             </div>
+            <split></split>
+            <div class="pics">
+                <h1 class="title">商家实景</h1>
+                <div class="pic-wrapper">
+                    <ul class="pic-list" ref="picListHook">
+                        <li class="pic-item" v-for="(pic, index) in seller.pics" :key="index">
+                            <img :src="pic" width="120px" height="90px">
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <split></split>
         </div>
     </div>
 </template>
@@ -70,10 +82,36 @@ export default {
     },
     mounted () {
         this.$nextTick(() => {
-            this.sellerScroll = new BScroll(this.$refs.sellerWrapper, {
-                click: true
-            })
+            this._initScroll()
         })
+    },
+    created () {
+        // console.log('a')
+    },
+    methods: {
+        _initScroll () {
+            if (!this.sellerScroll) {
+                 this.sellerScroll = new BScroll(this.$refs.sellerWrapper, {
+                    click: true
+                })
+            } else {
+                this.sellerScroll.refresh()
+            }
+            let pics = this.seller.pics
+            if (pics && pics.length > 0) {
+                let picWidth = 120
+                let margin = 6
+                let width = (picWidth + margin) * pics.length
+                this.$refs.picListHook.style.width = width
+            }
+        }
+    },
+    watch: {
+        seller (newSeller) {
+            this.$nextTick(() => {
+                this._initScroll()
+            })
+        }
     }
 
 }
@@ -118,7 +156,7 @@ export default {
                 text-align center
                 border-right 1px solid rgba(7,17,27,0.1)
                 &:last-child
-                    border-right none
+                    border none
                 h2
                     font-size 10px
                     line-height 10px
@@ -154,12 +192,33 @@ export default {
                 font-size 0
                 border-1px(rgba(7,17,27,.1))
                 &:last-child
-                    border none
+                    &::after
+                        display none
                 .text
                     font-size 12px
                     font-weight 200
                     color rgb(7,17,27)
                     line-height 16px
                     margin-left 6px
+    .pics
+        padding 18px 0 18px 18px
+        .title
+            font-size 14px
+            line-height 14px
+            color rgb(7,17,27)
+            margin-bottom 12px
+        .pic-wrapper
+            width 100%
+            height 105%
+            overflow hidden
+            .pic-list
+                display inline-block
+                white-space nowrap
+                .pic-item
+                    display inline-block
+                    margin-right 6px
+                    width 120px
+                    height 90px
+
 </style>
 

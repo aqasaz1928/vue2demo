@@ -71,5 +71,18 @@ export default {
                 bg-image('./img/guarantee_3')
             &.icon-invoice
                 bg-image('./img/invoice_3')
+        &.icon-4
+            width 16px
+            height 16px
+            &.icon-decrease
+                bg-image('./img/decrease_4')
+            &.icon-discount
+                bg-image('./img/discount_4')
+            &.icon-special
+                bg-image('./img/special_4')
+            &.icon-guarantee
+                bg-image('./img/guarantee_4')
+            &.icon-invoice
+                bg-image('./img/invoice_4')
 </style>
 

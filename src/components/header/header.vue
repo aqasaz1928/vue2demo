@@ -216,9 +216,9 @@ export default {
             backdrop-filter blur(10px)
             .detail-wrapper
                 min-height 100%
+                box-sizing border-box
+                padding 64px 0
                 .detail-main
-                    margin-top 64px
-                    padding-bottom 64px
                     .name
                         font-size 16px
                         line-height 16px

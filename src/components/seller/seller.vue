@@ -28,6 +28,10 @@
                         </div>
                     </li>
                 </ul>
+                <div class="favorite" @click="toggleFavorite" @touchend="toggleFavorite">
+                    <span class="icon-favorite" :class="{'active': isfavorite}"></span>
+                    <span class="text">{{favoriteStatus}}</span>
+                </div>
             </div>
             <split></split>
             <div class="bulletin">
@@ -45,7 +49,7 @@
             <split></split>
             <div class="pics">
                 <h1 class="title">商家实景</h1>
-                <div class="pic-wrapper">
+                <div class="pic-wrapper" ref="picWrapper">
                     <ul class="pic-list" ref="picListHook">
                         <li class="pic-item" v-for="(pic, index) in seller.pics" :key="index">
                             <img :src="pic" width="120px" height="90px">
@@ -54,6 +58,12 @@
                 </div>
             </div>
             <split></split>
+            <div class="info">
+                <h1 class="title border-1px">商家信息</h1>
+                <ul>
+                    <li class="info-item border-1px" v-for="(info, index) in seller.infos" :key="index">{{info}}</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -72,7 +82,8 @@ export default {
     },
     data () {
         return {
-            classMap: Const.ICON_MAP
+            classMap: Const.ICON_MAP,
+            isfavorite: false
         }
     },
     components: {
@@ -88,6 +99,11 @@ export default {
     created () {
         // console.log('a')
     },
+    computed: {
+        favoriteStatus () {
+            return this.isfavorite ? '已收藏' : '收藏'
+        }
+    },
     methods: {
         _initScroll () {
             if (!this.sellerScroll) {
@@ -97,12 +113,27 @@ export default {
             } else {
                 this.sellerScroll.refresh()
             }
+            if (this.picScroll) {
+                this.picScroll.refresh()
+                return
+            }
             let pics = this.seller.pics
             if (pics && pics.length > 0) {
                 let picWidth = 120
                 let margin = 6
                 let width = (picWidth + margin) * pics.length
                 this.$refs.picListHook.style.width = width
+                this.$nextTick(() => {
+                    this.picScroll = new BScroll(this.$refs.picWrapper, {
+                        scrollX: true,
+                        eventPassThrough: 'vertical'
+                    })
+                })
+            }
+        },
+        toggleFavorite (event) {
+            if (event.isTrusted) {
+                this.isfavorite = !this.isfavorite
             }
         }
     },
@@ -126,6 +157,7 @@ export default {
     width 100%
     overflow hidden     
     .overview
+        position relative
         padding 18px
         .title
             font-size 14px
@@ -169,6 +201,27 @@ export default {
                     .stress
                         font-size 24px
                         line-height 24px
+        .favorite
+            position absolute
+            right 18px
+            top 18px
+            width 36px
+            font-size 0
+            span
+                display inline-block
+                text-align center
+                width 36px
+                &.icon-favorite
+                    font-size 24px
+                    color #d4d6d9
+                    line-height 24px
+                    margin-bottom 4px
+                    &.active
+                        color rgb(240,20,20)
+            .text 
+                font-size 10px
+                line-height 10px
+                color rgb(77,85,93)
     .bulletin
         position relative
         padding 18px
@@ -219,6 +272,22 @@ export default {
                     margin-right 6px
                     width 120px
                     height 90px
-
+    .info
+        padding 18px
+        .title
+            font-size 14px
+            line-height 14px
+            color rgb(7,17,27)
+            padding-bottom 12px
+            border-1px(rgba(7,17,27,0.1))
+        .info-item
+            padding 16px 12px
+            font-size 12px
+            font-weight 200
+            color rgb(7,17,27)
+            line-height 16px
+            border-1px(rgba(7,17,27,0.1))
+            &:last-child
+                border-1px(transparent)
 </style>
 

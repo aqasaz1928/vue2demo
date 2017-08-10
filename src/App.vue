@@ -23,11 +23,19 @@
 <script>
 import header from 'components/header/header';
 import Const from '@/common/js/const'
+import {urlParse} from '@/common/js/util'
 const ERR_OK = 0;
 export default {
   data () {
     return {
-      seller: {}
+      seller: {
+        type: Object
+      },
+      id: (() => {
+          let queryParams = urlParse()
+          console.log(queryParams)
+          return queryParams.id
+        })()
     }
   },
   created () {
@@ -36,6 +44,7 @@ export default {
         response = response.body;
         if (response.errno === Const.ERR_OK) {
           this.seller = response.data;
+          this.seller.id = this.id
         }
         console.log(this.seller);
       },

@@ -73,6 +73,7 @@ import split from '@/components/split/split'
 import icon from '@/components/icon/icon'
 import Const from '@/common/js/const'
 import BScroll from 'better-scroll'
+import {saveToLocal, loadFromLocal} from '@/common/js/store'
 
 export default {
     props: {
@@ -106,6 +107,9 @@ export default {
     },
     methods: {
         _initScroll () {
+            this.isfavorite = (() => {
+                return loadFromLocal(this.seller.id, 'isfavorite', false)
+            })()
             if (!this.sellerScroll) {
                  this.sellerScroll = new BScroll(this.$refs.sellerWrapper, {
                     click: true
@@ -134,6 +138,7 @@ export default {
         toggleFavorite (event) {
             if (event.isTrusted) {
                 this.isfavorite = !this.isfavorite
+                saveToLocal(this.seller.id, 'isfavorite', this.isfavorite)
             }
         }
     },
